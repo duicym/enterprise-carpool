@@ -1,0 +1,66 @@
+<view class="order-page">
+  <!-- Tab 切换 -->
+  <scroll-view scroll-x class="tab-bar" enhanced show-scrollbar="{{false}}">
+    <view class="tab-item {{currentTab === item.key ? 'active' : ''}}" wx:for="{{tabs}}" wx:key="key" data-tab="{{item.key}}" bindtap="switchTab">
+      <text>{{item.label}}</text>
+      <view class="tab-indicator" wx:if="{{currentTab === item.key}}"></view>
+    </view>
+  </scroll-view>
+
+  <!-- 订单列表 -->
+  <scroll-view scroll-y class="order-list" enhanced show-scrollbar="{{false}}">
+    <!-- 加载中 -->
+    <view class="loading-wrap" wx:if="{{loading && orderList.length === 0}}">
+      <text>加载中...</text>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:elif="{{orderList.length === 0 && !loading}}">
+      <text class="empty-icon">📋</text>
+      <text class="empty-text">暂无订单</text>
+      <text class="empty-desc">去首页看看可用的路线吧</text>
+    </view>
+
+    <!-- 订单卡片 -->
+    <view wx:else>
+      <view wx:for="{{orderList}}" wx:key="id" class="order-card" bindtap="goToDetail" data-id="{{item.id}}">
+        <view class="order-header">
+          <text class="order-no">订单号: {{item.order_no}}</text>
+          <text class="order-status {{statusClassMap[item.status]}}">{{statusMap[item.status]}}</text>
+        </view>
+
+        <view class="order-route">
+          <view class="route-point">
+            <view class="point-dot start"></view>
+            <text class="point-text">{{item.pickup_address}}</text>
+          </view>
+          <view class="route-point">
+            <view class="point-dot end"></view>
+            <text class="point-text">{{item.dropoff_address}}</text>
+          </view>
+        </view>
+
+        <view class="order-footer">
+          <view class="order-info">
+            <text class="info-text">{{item.departure_time}} · {{item.seats_booked}}座</text>
+          </view>
+          <view class="order-price">
+            <text class="price-text">¥{{item.total_amount || 0}}</text>
+          </view>
+        </view>
+
+        <!-- 操作按钮 -->
+        <view class="order-actions" catchtap="stop">
+          <view wx:if="{{item.status === 0}}" class="action-group">
+            <view class="action-btn cancel" catchtap="cancelOrder" data-id="{{item.id}}">取消</view>
+            <view class="action-btn primary" catchtap="confirmOrder" data-id="{{item.id}}">确认</view>
+          </view>
+          <view wx:if="{{item.status === 1}}" class="action-group">
+            <view class="action-btn cancel" catchtap="cancelOrder" data-id="{{item.id}}">取消</view>
+            <view class="action-btn primary" catchtap="completeOrder" data-id="{{item.id}}">完成行程</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+</view>

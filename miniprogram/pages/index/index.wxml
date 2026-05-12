@@ -1,0 +1,106 @@
+<view class="index-page">
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <view class="search-input-wrap">
+      <image class="search-icon" src="/images/search.png" mode="aspectFit" />
+      <input class="search-input" placeholder="输入起点或终点关键词" value="{{keyword}}" bindinput="onKeywordInput" bindconfirm="handleSearch" confirm-type="search" />
+      <view class="clear-btn" wx:if="{{keyword}}" bindtap="clearKeyword">
+        <text class="clear-icon">×</text>
+      </view>
+    </view>
+    <view class="search-btn" bindtap="handleSearch">搜索</view>
+  </view>
+  
+  <!-- 筛选条件 -->
+  <view class="filter-bar">
+    <view class="filter-item {{selectedDate ? 'active' : ''}}" bindtap="selectDate">
+      <text>{{selectedDate || '选择日期'}}</text>
+      <text class="filter-arrow">▼</text>
+    </view>
+    <view class="filter-item {{selectedTime ? 'active' : ''}}" bindtap="selectTime">
+      <text>{{selectedTime || '选择时间'}}</text>
+      <text class="filter-arrow">▼</text>
+    </view>
+    <view class="filter-item clear-filter" wx:if="{{selectedDate || selectedTime}}" bindtap="clearFilters">
+      <text>清除筛选</text>
+    </view>
+  </view>
+  
+  <!-- 路线列表 -->
+  <scroll-view scroll-y class="route-list" enhanced show-scrollbar="{{false}}">
+    <!-- 加载中 -->
+    <view class="loading-wrap" wx:if="{{loading && routeList.length === 0}}">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">加载中...</text>
+    </view>
+    
+    <!-- 空状态 -->
+    <view class="empty-list" wx:elif="{{routeList.length === 0 && !loading}}">
+      <image class="empty-icon" src="/images/empty.png" mode="aspectFit" />
+      <text class="empty-text">暂无路线</text>
+      <text class="empty-subtitle">试试调整筛选条件或发布新路线</text>
+    </view>
+    
+    <!-- 路线卡片 -->
+    <view wx:else>
+      <view wx:for="{{routeList}}" wx:key="id" class="route-card" bindtap="goToDetail" data-id="{{item.id}}">
+        <view class="route-header">
+          <view class="driver-info">
+            <image class="driver-avatar" src="{{item.driver.avatar_url || '/images/default-avatar.png'}}" mode="aspectFill" />
+            <view class="driver-detail">
+              <view class="driver-name">{{item.driver.nickname}}</view>
+              <view class="driver-rating" wx:if="{{item.driver.rating}}">
+                <text class="rating-star">★</text>
+                <text class="rating-score">{{item.driver.rating}}</text>
+              </view>
+            </view>
+          </view>
+          <view class="company-tag" wx:if="{{item.company}}">{{item.company.name}}</view>
+        </view>
+        
+        <view class="route-content">
+          <view class="route-point">
+            <view class="point-icon start-point">
+              <view class="dot-start"></view>
+            </view>
+            <view class="point-info">
+              <text class="point-text">{{item.start_address}}</text>
+            </view>
+          </view>
+          <view class="route-line"></view>
+          <view class="route-point">
+            <view class="point-icon end-point">
+              <view class="dot-end"></view>
+            </view>
+            <view class="point-info">
+              <text class="point-text">{{item.end_address}}</text>
+            </view>
+          </view>
+        </view>
+        
+        <view class="route-footer">
+          <view class="route-info-left">
+            <view class="route-time">
+              <text class="info-label">出发</text>
+              <text class="info-value">{{item.departure_time}}</text>
+            </view>
+            <view class="route-seats">
+              <text class="info-label">剩余</text>
+              <text class="info-value seats-{{item.available_seats <= 0 ? 'full' : 'available'}}">{{item.available_seats}}座</text>
+            </view>
+          </view>
+          <view class="route-price">
+            <text class="price-symbol">¥</text>
+            <text class="price-value">{{item.price_per_seat || 0}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+  
+  <!-- 发布按钮 -->
+  <view class="publish-btn" bindtap="goToPublish">
+    <text class="publish-icon">+</text>
+    <text class="publish-text">发布路线</text>
+  </view>
+</view>

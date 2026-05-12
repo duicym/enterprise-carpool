@@ -1,0 +1,81 @@
+<view class="detail-page">
+  <view wx:if="{{loading}}" class="loading-wrap">
+    <text>加载中...</text>
+  </view>
+
+  <view wx:else class="detail-content">
+    <!-- 路线信息卡片 -->
+    <view class="route-card">
+      <view class="route-header">
+        <view class="route-points">
+          <view class="point start">
+            <view class="point-dot start-dot"></view>
+            <view class="point-info">
+              <text class="point-label">起点</text>
+              <text class="point-address">{{route.start_address}}</text>
+            </view>
+          </view>
+          <view class="point-line"></view>
+          <view class="point end">
+            <view class="point-dot end-dot"></view>
+            <view class="point-info">
+              <text class="point-label">终点</text>
+              <text class="point-address">{{route.end_address}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 车主信息 -->
+    <view class="driver-card">
+      <view class="driver-info">
+        <image class="driver-avatar" src="{{route.driver.avatar_url || '/images/default-avatar.png'}}" mode="aspectFill" />
+        <view class="driver-detail">
+          <text class="driver-name">{{route.driver.nickname}}</text>
+          <view class="driver-rating">
+            <text class="rating-star" wx:for="{{5}}" wx:key="*this" wx:for-item="star">★</text>
+            <text class="rating-text">5.0</text>
+          </view>
+        </view>
+      </view>
+      <view class="company-tag" wx:if="{{route.company}}">{{route.company.name}}</view>
+    </view>
+
+    <!-- 行程信息 -->
+    <view class="trip-info-card">
+      <view class="info-title">行程信息</view>
+      <view class="info-row">
+        <text class="info-label">出发时间</text>
+        <text class="info-value">{{route.departure_time}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">预计到达</text>
+        <text class="info-value">{{arrivalTime}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">剩余座位</text>
+        <text class="info-value {{route.available_seats <= 0 ? 'full' : 'available'}}">{{route.available_seats}} 座</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">每座价格</text>
+        <text class="info-value price">¥{{route.price_per_seat || 0}}</text>
+      </view>
+      <view class="info-row" wx:if="{{route.remark}}">
+        <text class="info-label">备注</text>
+        <text class="info-value remark">{{route.remark}}</text>
+      </view>
+    </view>
+
+    <!-- 预约按钮 -->
+    <view class="action-bar">
+      <view class="contact-btn" bindtap="contactDriver">
+        <text class="contact-icon">📞</text>
+        <text>联系车主</text>
+      </view>
+      <view class="book-btn {{bookDisabled ? 'disabled' : ''}}" bindtap="bookSeat">
+        <text>{{bookBtnText}}</text>
+      </view>
+    </view>
+  </view>
+</view>

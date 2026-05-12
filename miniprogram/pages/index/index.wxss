@@ -1,0 +1,353 @@
+.index-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: #f5f5f5;
+}
+
+/* 搜索栏 */
+.search-bar {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 24rpx;
+  background: #fff;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+.search-input-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  height: 64rpx;
+  padding: 0 20rpx;
+  background: #f5f5f5;
+  border-radius: 32rpx;
+}
+
+.search-icon {
+  width: 32rpx;
+  height: 32rpx;
+  margin-right: 12rpx;
+}
+
+.search-input {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.clear-btn {
+  padding: 8rpx;
+}
+
+.clear-icon {
+  font-size: 32rpx;
+  color: #999;
+  line-height: 1;
+}
+
+.search-btn {
+  margin-left: 16rpx;
+  padding: 12rpx 24rpx;
+  background: #07c160;
+  color: #fff;
+  font-size: 28rpx;
+  border-radius: 32rpx;
+}
+
+/* 筛选栏 */
+.filter-bar {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 24rpx;
+  background: #fff;
+  border-bottom: 1rpx solid #eee;
+}
+
+.filter-item {
+  display: flex;
+  align-items: center;
+  padding: 8rpx 16rpx;
+  margin-right: 16rpx;
+  background: #f5f5f5;
+  border-radius: 8rpx;
+  font-size: 26rpx;
+  color: #666;
+}
+
+.filter-item.active {
+  background: #e8f5e9;
+  color: #07c160;
+}
+
+.filter-item.clear-filter {
+  background: #ffebee;
+  color: #f44336;
+}
+
+.filter-arrow {
+  margin-left: 8rpx;
+  font-size: 20rpx;
+}
+
+/* 路线列表 */
+.route-list {
+  flex: 1;
+  padding: 16rpx 24rpx 160rpx;
+  overflow-y: auto;
+}
+
+/* 加载状态 */
+.loading-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx 0;
+}
+
+.loading-spinner {
+  width: 48rpx;
+  height: 48rpx;
+  border: 4rpx solid #eee;
+  border-top-color: #07c160;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-text {
+  margin-top: 20rpx;
+  font-size: 26rpx;
+  color: #999;
+}
+
+/* 空状态 */
+.empty-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 100rpx 0;
+}
+
+.empty-icon {
+  width: 200rpx;
+  height: 200rpx;
+  margin-bottom: 24rpx;
+}
+
+.empty-text {
+  font-size: 32rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.empty-subtitle {
+  margin-top: 12rpx;
+  font-size: 26rpx;
+  color: #999;
+}
+
+/* 路线卡片 */
+.route-card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.route-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+}
+
+.driver-info {
+  display: flex;
+  align-items: center;
+}
+
+.driver-avatar {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  margin-right: 16rpx;
+}
+
+.driver-detail {
+  display: flex;
+  flex-direction: column;
+}
+
+.driver-name {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.driver-rating {
+  display: flex;
+  align-items: center;
+  margin-top: 4rpx;
+}
+
+.rating-star {
+  font-size: 24rpx;
+  color: #ffc107;
+  margin-right: 4rpx;
+}
+
+.rating-score {
+  font-size: 22rpx;
+  color: #666;
+}
+
+.company-tag {
+  padding: 6rpx 16rpx;
+  background: #e3f2fd;
+  color: #1976d2;
+  font-size: 22rpx;
+  border-radius: 8rpx;
+}
+
+/* 路线内容 */
+.route-content {
+  padding: 20rpx 0;
+  border-top: 1rpx solid #f0f0f0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.route-point {
+  display: flex;
+  align-items: center;
+  padding: 12rpx 0;
+}
+
+.point-icon {
+  width: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16rpx;
+}
+
+.dot-start {
+  width: 20rpx;
+  height: 20rpx;
+  background: #07c160;
+  border-radius: 50%;
+}
+
+.dot-end {
+  width: 20rpx;
+  height: 20rpx;
+  background: #f44336;
+  border-radius: 50%;
+}
+
+.route-line {
+  margin-left: 20rpx;
+  width: 2rpx;
+  height: 20rpx;
+  background: #ddd;
+}
+
+.point-info {
+  flex: 1;
+}
+
+.point-text {
+  font-size: 28rpx;
+  color: #333;
+}
+
+/* 路线底部 */
+.route-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20rpx;
+}
+
+.route-info-left {
+  display: flex;
+  align-items: center;
+}
+
+.route-time,
+.route-seats {
+  display: flex;
+  align-items: center;
+  margin-right: 32rpx;
+}
+
+.info-label {
+  font-size: 22rpx;
+  color: #999;
+  margin-right: 8rpx;
+}
+
+.info-value {
+  font-size: 26rpx;
+  color: #333;
+}
+
+.seats-available {
+  color: #07c160;
+}
+
+.seats-full {
+  color: #f44336;
+}
+
+.route-price {
+  display: flex;
+  align-items: baseline;
+}
+
+.price-symbol {
+  font-size: 24rpx;
+  color: #f44336;
+  margin-right: 4rpx;
+}
+
+.price-value {
+  font-size: 36rpx;
+  color: #f44336;
+  font-weight: 600;
+}
+
+/* 发布按钮 */
+.publish-btn {
+  position: fixed;
+  right: 32rpx;
+  bottom: 200rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 120rpx;
+  height: 120rpx;
+  background: linear-gradient(135deg, #07c160, #05a850);
+  border-radius: 50%;
+  box-shadow: 0 8rpx 24rpx rgba(7, 193, 96, 0.3);
+}
+
+.publish-icon {
+  font-size: 48rpx;
+  color: #fff;
+  line-height: 1;
+}
+
+.publish-text {
+  font-size: 20rpx;
+  color: #fff;
+  margin-top: 4rpx;
+}

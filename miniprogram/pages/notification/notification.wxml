@@ -1,0 +1,43 @@
+<view class="notification-page">
+  <!-- Tab 切换 -->
+  <view class="tab-bar">
+    <view class="tab-item {{currentTab === item.key ? 'active' : ''}}" wx:for="{{tabs}}" wx:key="key" data-tab="{{item.key}}" bindtap="switchTab">
+      <text>{{item.label}}</text>
+      <view class="tab-indicator" wx:if="{{currentTab === item.key}}"></view>
+    </view>
+    <view class="mark-all-btn" bindtap="markAllAsRead" wx:if="{{unreadCount > 0}}">
+      <text>全部已读</text>
+    </view>
+  </view>
+
+  <!-- 通知列表 -->
+  <scroll-view scroll-y class="notification-list" enhanced show-scrollbar="{{false}}">
+    <!-- 加载中 -->
+    <view class="loading-wrap" wx:if="{{loading && notificationList.length === 0}}">
+      <text>加载中...</text>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:elif="{{notificationList.length === 0 && !loading}}">
+      <text class="empty-icon">🔔</text>
+      <text class="empty-text">暂无消息</text>
+    </view>
+
+    <!-- 通知卡片 -->
+    <view wx:else>
+      <view wx:for="{{notificationList}}" wx:key="id" class="notification-card {{item.is_read === 0 ? 'unread' : ''}}" bindtap="markAsRead" data-id="{{item.id}}">
+        <view class="notification-icon">
+          <text class="icon-text">{{item.type === 'order_confirm' ? '✓' : item.type === 'order_cancel' ? '✗' : item.type === 'review_new' ? '★' : item.type === 'audit_pass' ? '✓' : item.type === 'audit_reject' ? '!' : '📢'}}</text>
+        </view>
+        <view class="notification-content">
+          <view class="notification-header">
+            <text class="notification-type">{{typeMap[item.type] || '通知'}}</text>
+            <text class="notification-time">{{item.created_at}}</text>
+          </view>
+          <text class="notification-text">{{item.content}}</text>
+        </view>
+        <view class="unread-dot" wx:if="{{item.is_read === 0}}"></view>
+      </view>
+    </view>
+  </scroll-view>
+</view>

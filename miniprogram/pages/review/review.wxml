@@ -1,0 +1,41 @@
+<view class="review-page">
+  <view class="page-header">
+    <text class="page-title">评价</text>
+    <text class="page-desc">给对方一个评价吧</text>
+  </view>
+
+  <!-- 被评价人信息 -->
+  <view class="reviewee-card">
+    <image class="reviewee-avatar" src="{{revieweeAvatar || '/images/default-avatar.png'}}" mode="aspectFill" />
+    <text class="reviewee-name">{{revieweeName}}</text>
+  </view>
+
+  <!-- 评分 -->
+  <view class="rating-section">
+    <text class="section-title">评分</text>
+    <view class="stars">
+      <view class="star-item" wx:for="{{5}}" wx:key="*this" data-rating="{{index + 1}}" bindtap="selectRating">
+        <text class="star {{rating >= index + 1 ? 'active' : ''}}">★</text>
+      </view>
+    </view>
+    <text class="rating-text">{{ratingText}}</text>
+  </view>
+
+  <!-- 评价内容 -->
+  <view class="content-section">
+    <text class="section-title">评价内容</text>
+    <textarea class="content-input" placeholder="分享你的体验感受..." maxlength="200" value="{{content}}" bindinput="onContentInput" />
+    <text class="char-count">{{content.length}}/200</text>
+  </view>
+
+  <!-- 匿名选项 -->
+  <view class="anonymous-section">
+    <text class="section-title">匿名评价</text>
+    <switch checked="{{isAnonymous}}" bindchange="onAnonymousChange" color="#07c160" />
+  </view>
+
+  <!-- 提交按钮 -->
+  <button class="submit-btn" bindtap="submitReview" loading="{{submitting}}" disabled="{{submitting}}">
+    {{submitting ? '提交中...' : '提交评价'}}
+  </button>
+</view>

@@ -1,0 +1,86 @@
+<view class="auth-page">
+  <!-- 页面标题 -->
+  <view class="page-header">
+    <text class="page-title">企业认证</text>
+    <text class="page-desc">完成企业认证，享受安全通勤拼车服务</text>
+  </view>
+
+  <!-- 已认证状态 -->
+  <view class="auth-status-section" wx:if="{{authStatus === 1}}">
+    <view class="status-icon success">✓</view>
+    <text class="status-text">已认证</text>
+    <text class="status-company">{{companyName}}</text>
+    <view class="status-btn" bindtap="goToIndex">
+      <text>返回首页</text>
+    </view>
+  </view>
+
+  <!-- 审核中状态 -->
+  <view class="auth-status-section" wx:elif="{{authStatus === 0}}">
+    <view class="status-icon pending">⏳</view>
+    <text class="status-text">审核中</text>
+    <text class="status-desc">您的认证申请已提交，请耐心等待审核</text>
+    <view class="status-btn" bindtap="goToIndex">
+      <text>返回首页</text>
+    </view>
+  </view>
+
+  <!-- 被拒绝状态 -->
+  <view class="auth-status-section" wx:elif="{{authStatus === 2}}">
+    <view class="status-icon reject">✗</view>
+    <text class="status-text">审核未通过</text>
+    <text class="status-reason" wx:if="{{authRemark}}">原因：{{authRemark}}</text>
+    <view class="status-btn primary" bindtap="handleResubmit">
+      <text>重新提交</text>
+    </view>
+  </view>
+
+  <!-- 认证表单 -->
+  <view class="auth-form" wx:if="{{authStatus === null || authStatus === 2}}">
+    <!-- 企业名称 -->
+    <view class="form-item">
+      <text class="form-label">企业名称 <text class="required">*</text></text>
+      <input class="form-input" placeholder="请输入完整企业名称" value="{{companyName}}" bindinput="onCompanyNameInput" bindblur="closeCompanyList" />
+    </view>
+
+    <!-- 公司搜索结果 -->
+    <view class="company-list" wx:if="{{showCompanyList && companyList.length > 0}}">
+      <view wx:for="{{companyList}}" wx:key="id" class="company-item" bindtap="selectCompany" data-item="{{item}}">
+        <text class="company-name">{{item.name}}</text>
+        <text class="company-count">{{item.user_count}}人认证</text>
+      </view>
+    </view>
+
+    <!-- 工号 -->
+    <view class="form-item">
+      <text class="form-label">工号/学号</text>
+      <input class="form-input" placeholder="选填，方便同事确认身份" value="{{employeeId}}" bindinput="onEmployeeIdInput" />
+    </view>
+
+    <!-- 在职证明 -->
+    <view class="form-item">
+      <text class="form-label">在职证明 <text class="required">*</text></text>
+      <view class="upload-area" bindtap="uploadCertificate">
+        <image class="upload-preview" src="{{certificateUrl}}" mode="aspectFill" wx:if="{{certificateUrl}}" />
+        <view class="upload-placeholder" wx:else>
+          <text class="upload-icon">📷</text>
+          <text class="upload-text">点击上传在职证明</text>
+          <text class="upload-hint">支持工牌、在职证明等照片</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 提交按钮 -->
+    <button class="submit-btn" bindtap="handleSubmit" loading="{{submitting}}" disabled="{{submitting}}">
+      {{submitting ? '提交中...' : '提交认证'}}
+    </button>
+
+    <!-- 认证说明 -->
+    <view class="auth-tips">
+      <text class="tips-title">认证说明</text>
+      <text class="tips-item">• 企业名称需与工商注册名称一致</text>
+      <text class="tips-item">• 在职证明需清晰显示姓名和公司信息</text>
+      <text class="tips-item">• 审核时间通常为1-3个工作日</text>
+    </view>
+  </view>
+</view>

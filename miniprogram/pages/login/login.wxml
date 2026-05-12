@@ -1,0 +1,38 @@
+<view class="login-page">
+  <!-- Logo 区域 -->
+  <view class="logo-section">
+    <view class="logo-icon">🚗</view>
+    <text class="app-name">企业顺风车</text>
+    <text class="app-desc">安全便捷的通勤拼车平台</text>
+  </view>
+  
+  <!-- 登录按钮区域 -->
+  <view class="login-section">
+    <!-- 微信授权登录 -->
+    <button class="login-btn wx-login-btn" bindtap="onGetUserProfile" loading="{{loading}}" disabled="{{loading}}">
+      <text class="btn-icon">💬</text>
+      <text>微信授权登录</text>
+    </button>
+    
+    <!-- 普通登录 -->
+    <button class="login-btn normal-login-btn" bindtap="handleLogin" loading="{{loading}}" disabled="{{loading}}">
+      一键登录
+    </button>
+    
+    <!-- 跳过按钮（调试用） -->
+    <view class="skip-btn" bindtap="handleSkip">
+      <text>跳过，先逛逛</text>
+    </view>
+  </view>
+  
+  <!-- 用户信息展示 -->
+  <view class="user-info-section" wx:if="{{hasUserInfo}}">
+    <image class="user-avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill" />
+    <text class="user-name">{{userInfo.nickName}}</text>
+  </view>
+  
+  <!-- 底部说明 -->
+  <view class="footer-section">
+    <text class="footer-text">登录即表示同意《用户协议》和《隐私政策》</text>
+  </view>
+</view>

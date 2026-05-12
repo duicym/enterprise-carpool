@@ -1,0 +1,14 @@
+{
+  "name": "carpool-miniprogram",
+  "version": "1.0.0",
+  "description": "企业顺风车小程序",
+  "private": true,
+  "dependencies": {
+    "vant-weapp": "^1.10.0",
+    "mobx-miniprogram": "^4.13.0",
+    "mobx-miniprogram-bindings": "^1.2.1"
+  },
+  "devDependencies": {
+    "@types/wechat-miniprogram": "^3.0.0"
+  }
+}

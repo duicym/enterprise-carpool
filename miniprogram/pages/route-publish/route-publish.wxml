@@ -1,0 +1,77 @@
+<view class="publish-page">
+  <view class="page-header">
+    <text class="page-title">发布路线</text>
+    <text class="page-desc">填写路线信息，帮助同事一起通勤</text>
+  </view>
+
+  <view class="form-section">
+    <!-- 起点 -->
+    <view class="form-item">
+      <text class="form-label">起点 <text class="required">*</text></text>
+      <view class="location-picker" bindtap="selectStartLocation">
+        <text class="location-text {{startAddress ? 'has-value' : ''}}">{{startAddress || '点击选择起点'}}</text>
+        <text class="location-arrow">></text>
+      </view>
+    </view>
+
+    <!-- 终点 -->
+    <view class="form-item">
+      <text class="form-label">终点 <text class="required">*</text></text>
+      <view class="location-picker" bindtap="selectEndLocation">
+        <text class="location-text {{endAddress ? 'has-value' : ''}}">{{endAddress || '点击选择终点'}}</text>
+        <text class="location-arrow">></text>
+      </view>
+    </view>
+
+    <!-- 出发日期 -->
+    <view class="form-item">
+      <text class="form-label">出发日期 <text class="required">*</text></text>
+      <picker mode="date" value="{{publishDate}}" start="{{minDate}}" bindchange="onPublishDateChange">
+        <view class="picker-value">{{publishDate || '选择日期'}}</view>
+      </picker>
+    </view>
+
+    <!-- 出发时间 -->
+    <view class="form-item">
+      <text class="form-label">出发时间 <text class="required">*</text></text>
+      <picker mode="time" value="{{departureTime}}" bindchange="onDepartureTimeChange">
+        <view class="picker-value">{{departureTime || '选择时间'}}</view>
+      </picker>
+    </view>
+
+    <!-- 剩余座位 -->
+    <view class="form-item">
+      <text class="form-label">可提供座位数</text>
+      <view class="seats-control">
+        <view class="seats-btn" bindtap="decreaseSeats">-</view>
+        <text class="seats-value">{{seats}}</text>
+        <view class="seats-btn" bindtap="increaseSeats">+</view>
+      </view>
+    </view>
+
+    <!-- 价格 -->
+    <view class="form-item">
+      <text class="form-label">每座价格（元）</text>
+      <input class="form-input price-input" type="digit" placeholder="0 表示免费" value="{{price}}" bindinput="onPriceInput" />
+    </view>
+
+    <!-- 频率 -->
+    <view class="form-item">
+      <text class="form-label">发布频率</text>
+      <picker mode="selector" range="{{frequencyOptions}}" value="{{frequencyIndex}}" bindchange="onFrequencyChange">
+        <view class="picker-value">{{frequencyOptions[frequencyIndex]}}</view>
+      </picker>
+    </view>
+
+    <!-- 备注 -->
+    <view class="form-item">
+      <text class="form-label">备注信息</text>
+      <textarea class="form-textarea" placeholder="如：上车地点、联系方式等" maxlength="200" value="{{remark}}" bindinput="onRemarkInput" />
+    </view>
+
+    <!-- 提交按钮 -->
+    <button class="submit-btn" bindtap="handleSubmit" loading="{{submitting}}" disabled="{{submitting}}">
+      {{submitting ? '发布中...' : '发布路线'}}
+    </button>
+  </view>
+</view>
