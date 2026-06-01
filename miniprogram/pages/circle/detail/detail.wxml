@@ -1,0 +1,63 @@
+<!--pages/circle/detail/detail.wxml-->
+<view class="container">
+  <!-- 圈子基本信息 -->
+  <view class="circle-header" wx:if="{{circle}}">
+    <view class="circle-name">{{circle.name}}</view>
+    <view class="circle-desc">{{circle.description}}</view>
+    <view class="circle-meta">
+      <text class="tag">{{formatType(circle.type)}}</text>
+      <text class="count">成员 {{members.length}}人</text>
+    </view>
+    <view class="circle-actions" wx:if="{{isMember}}">
+      <button class="btn btn-primary" bindtap="createTrip">发布行程</button>
+      <button class="btn btn-secondary" bindtap="createEvent">创建活动</button>
+    </view>
+    <view class="circle-management" wx:if="{{isAdmin}}">
+      <button class="btn btn-outline" bindtap="manageMembers">管理成员</button>
+      <button class="btn btn-outline" bindtap="editCircle" wx:if="{{isOwner}}">编辑圈子</button>
+    </view>
+  </view>
+
+  <!-- 行程列表 -->
+  <view class="section" wx:if="{{trips.length > 0}}">
+    <view class="section-title">最新行程</view>
+    <view class="trip-list">
+      <view class="trip-item" wx:for="{{trips}}" wx:key="id" bindtap="goToTripDetail" data-id="{{item.id}}">
+        <view class="route">
+          <text class="from">{{item.departure}}</text>
+          <text class="arrow">→</text>
+          <text class="to">{{item.destination}}</text>
+        </view>
+        <view class="trip-info">
+          <text class="date">{{formatDate(item.departureTime)}}</text>
+          <text class="seats">空 {{item.availableSeats}}座</text>
+        </view>
+        <view class="trip-meta">
+          <text class="driver">车主：{{item.driver.nickname}}</text>
+          <text class="status" wx:if="{{item.status === 0}}">预约中</text>
+          <text class="status" wx:if="{{item.status === 1}}">已成行</text>
+          <text class="status" wx:if="{{item.status === 2}}">已结束</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 成员列表 -->
+  <view class="section">
+    <view class="section-title">成员 ({{members.length}})</view>
+    <view class="member-grid">
+      <view class="member-item" wx:for="{{members}}" wx:key="userId" bindtap="goToMemberProfile" data-id="{{item.userId}}">
+        <image class="avatar" src="{{item.user.avatarUrl}}" mode="aspectFill" />
+        <view class="nickname">{{item.user.nickname}}</view>
+        <view class="role-tag" wx:if="{{item.role === 3}}">圈主</view>
+        <view class="role-tag admin" wx:if="{{item.role === 2}}">管理员</view>
+        <view class="status-dot" wx:if="{{item.status === 1}}" title="已加入"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+</view>

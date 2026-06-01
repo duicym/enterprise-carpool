@@ -1,0 +1,107 @@
+<!--pages/trip/detail/detail.wxml-->
+<view class="container">
+  <view class="trip-card" wx:if="{{trip}}">
+    <!-- 路线信息 -->
+    <view class="route-section">
+      <view class="route-item">
+        <view class="time-point start"></view>
+        <view class="route-detail">
+          <view class="label">出发地</view>
+          <view class="address">{{trip.startAddress}}</view>
+          <view class="time">{{formatDateTime(trip.departureTime)}}</view>
+        </view>
+      </view>
+      <view class="route-line"></view>
+      <view class="route-item">
+        <view class="time-point end"></view>
+        <view class="route-detail">
+          <view class="label">目的地</view>
+          <view class="address">{{trip.endAddress}}</view>
+          <view class="time-tip">预计 {{calculateArrivalTime(trip.departureTime, trip.duration)}}</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 车主信息 -->
+    <view class="driver-section">
+      <image class="driver-avatar" src="{{trip.driver.avatarUrl}}" mode="aspectFill" />
+      <view class="driver-info">
+        <view class="driver-name">{{trip.driver.nickname}}</view>
+        <view class="driver-rating">信用分 {{trip.driver.creditScore}}</view>
+      </view>
+    </view>
+
+    <!-- 行程信息 -->
+    <view class="trip-info-section">
+      <view class="info-row">
+        <text class="label">费用模式</text>
+        <text class="value">{{formatFeeMode(trip.feeMode)}}</text>
+      </view>
+      <view class="info-row" wx:if="{{trip.feeAmount}}">
+        <text class="label">金额</text>
+        <text class="value price">¥{{trip.feeAmount}}</text>
+      </view>
+      <view class="info-row">
+        <text class="label">可坐人数</text>
+        <text class="value">{{trip.availableSeats}}人</text>
+      </view>
+      <view class="info-row">
+        <text class="label">车牌号</text>
+        <text class="value">{{trip.plateNumber || '未填写'}}</text>
+      </view>
+      <view class="info-row">
+        <text class="label">状态</text>
+        <text class="value status" wx:if="{{trip.status === 1}}">预约中</text>
+        <text class="value status" wx:if="{{trip.status === 2}}">已成行</text>
+        <text class="value status" wx:if="{{trip.status === 3}}">进行中</text>
+        <text class="value status" wx:if="{{trip.status === 4}}">已结束</text>
+        <text class="value status_cancel" wx:if="{{trip.status === 5}}">已取消</text>
+      </view>
+      <view class="info-row" wx:if="{{trip.remark}}">
+        <text class="label">备注</text>
+        <text class="value">{{trip.remark}}</text>
+      </view>
+    </view>
+
+    <!-- 预约按钮 -->
+    <view class="action-section" wx:if="{{canBook}}">
+      <button class="btn-book" bindtap="createBooking" disabled="{{trip.status !== 1 || trip.availableSeats <= 0}}">
+        {{trip.status !== 1 ? '行程已结束' : trip.availableSeats <= 0 ? '已满员' : '立即预约'}}
+      </button>
+    </view>
+
+    <!-- 车主操作 -->
+    <view class="action-section" wx:if="{{isDriver}}">
+      <view class="driver-actions">
+        <button class="btn-manage" bindtap="viewBookings">查看预约</button>
+        <button class="btn-cancel" bindtap="cancelTrip" wx:if="{{trip.status === 1}}">取消行程</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 预约列表 -->
+  <view class="bookings-section" wx:if="{{bookings.length > 0}}">
+    <view class="section-title">预约乘客</view>
+    <view class="booking-list">
+      <view class="booking-item" wx:for="{{bookings}}" wx:key="id">
+        <view class="passenger-info">
+          <image class="passenger-avatar" src="{{item.passenger.avatarUrl}}" mode="aspectFill" />
+          <view class="passenger-detail">
+            <view class="name">{{item.passenger.nickname}}</view>
+            <view class="phone" wx:if="{{item.status === 1}}">{{item.passenger.phone}}</view>
+          </view>
+        </view>
+        <view class="booking-status">
+          <text class="status" wx:if="{{item.status === 0}}">待确认</text>
+          <text class="status-ok" wx:if="{{item.status === 1}}">已确认</text>
+          <text class="status-cancel" wx:if="{{item.status === 3}}">已取消</text>
+          <text class="status-reject" wx:if="{{item.status === 4}}">已拒绝</text>
+          <view class="action-buttons" wx:if="{{isDriver && item.status === 0}}">
+            <button class="btn-confirm" size="mini" bindtap="confirmBooking" data-id="{{item.id}}">确认</button>
+            <button class="btn-reject" size="mini" bindtap="rejectBooking" data-id="{{item.id}}">拒绝</button>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

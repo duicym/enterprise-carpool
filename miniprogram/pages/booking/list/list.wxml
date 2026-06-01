@@ -1,0 +1,57 @@
+<!--pages/booking/list/list.wxml-->
+<view class="container">
+  <!-- 筛选 tabs -->
+  <view class="tabs">
+    <view class="tab-item {{currentTab === 'all' ? 'active' : ''}}" data-tab="all" bindtap="switchTab">全部</view>
+    <view class="tab-item {{currentTab === 'pending' ? 'active' : ''}}" data-tab="pending" bindtap="switchTab">待确认</view>
+    <view class="tab-item {{currentTab === 'confirmed' ? 'active' : ''}}" data-tab="confirmed" bindtap="switchTab">已确认</view>
+    <view class="tab-item {{currentTab === 'completed' ? 'active' : ''}}" data-tab="completed" bindtap="switchTab">已完成</view>
+  </view>
+
+  <!-- 预约列表 -->
+  <view class="booking-list" wx:if="{{bookings.length > 0}}">
+    <view class="booking-item" wx:for="{{bookings}}" wx:key="id" bindtap="goToDetail" data-id="{{item.id}}">
+      <view class="trip-route">
+        <text class="from">{{item.trip.startAddress}}</text>
+        <text class="arrow">→</text>
+        <text class="to">{{item.trip.endAddress}}</text>
+      </view>
+      <view class="booking-info">
+        <view class="row">
+          <text class="label">出发时间:</text>
+          <text class="value">{{formatDateTime(item.trip.departureTime)}}</text>
+        </view>
+        <view class="row">
+          <text class="label">座位:</text>
+          <text class="value">{{item.seatsBooked}}个</text>
+        </view>
+        <view class="row" wx:if="{{item.feeAmount}}">
+          <text class="label">金额:</text>
+          <text class="value price">¥{{item.feeAmount}}</text>
+        </view>
+      </view>
+      <view class="booking-footer">
+        <view class="passenger" wx:if="{{isDriver}}">
+          <text class="name">{{item.passenger.nickname}}</text>
+        </view>
+        <view class="status-tag status-{{item.status}}">
+          {{formatStatus(item.status)}}
+        </view>
+      </view>
+      <view class="booking-actions" wx:if="{{showActions(item.status)}}">
+        <button class="btn-action btn-cancel" catchtap="cancelBooking" data-id="{{item.id}}" wx:if="{{item.status === 0 || item.status === 1}}">取消</button>
+        <button class="btn-action btn-review" bindtap="writeReview" data-id="{{item.id}}" wx:if="{{item.status === 2}}">评价</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty" wx:if="{{!loading && bookings.length === 0}}">
+    <text class="empty-text">暂无预约</text>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+</view>

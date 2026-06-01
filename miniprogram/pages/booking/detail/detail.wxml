@@ -1,0 +1,113 @@
+<!--pages/booking/detail/detail.wxml-->
+<view class="container">
+  <view class="booking-card" wx:if="{{booking}}">
+    <!-- 状态 -->
+    <view class="status-header status-{{booking.status}}">
+      <text class="status-text">{{formatStatus(booking.status)}}</text>
+    </view>
+
+    <!-- 行程信息 -->
+    <view class="section">
+      <view class="section-title">行程信息</view>
+      <view class="info-row">
+        <text class="label">路线</text>
+        <text class="value">{{booking.trip.startAddress}} → {{booking.trip.endAddress}}</text>
+      </view>
+      <view class="info-row">
+        <text class="label">出发时间</text>
+        <text class="value">{{formatDateTime(booking.trip.departureTime)}}</text>
+      </view>
+      <view class="info-row">
+        <text class="label">座位数</text>
+        <text class="value">{{booking.seatsBooked}}个</text>
+      </view>
+      <view class="info-row" wx:if="{{booking.feeAmount}}">
+        <text class="label">费用</text>
+        <text class="value price">¥{{booking.feeAmount}}</text>
+      </view>
+    </view>
+
+    <!-- 乘客信息 (车主视图) -->
+    <view class="section" wx:if="{{isDriver}}">
+      <view class="section-title">乘客信息</view>
+      <view class="passenger-card">
+        <image class="avatar" src="{{booking.passenger.avatarUrl}}" mode="aspectFill" />
+        <view class="passenger-info">
+          <view class="name">{{booking.passenger.nickname}}</view>
+          <view class="phone" wx:if="{{booking.status === 1}}">{{booking.passenger.phone}}</view>
+          <view class="credit">信用分 {{booking.passenger.creditScore}}</view>
+        </view>
+        <view class="contact-btn" wx:if="{{booking.status === 1}}" bindtap="callPassenger">联系</view>
+      </view>
+    </view>
+
+    <!-- 车主信息 (乘客视图) -->
+    <view class="section" wx:if="{{!isDriver}}">
+      <view class="section-title">车主信息</view>
+      <view class="passenger-card">
+        <image class="avatar" src="{{booking.driver.avatarUrl}}" mode="aspectFill" />
+        <view class="passenger-info">
+          <view class="name">{{booking.driver.nickname}}</view>
+          <view class="phone" wx:if="{{booking.status === 1}}">{{booking.driver.phone}}</view>
+          <view class="credit">信用分 {{booking.driver.creditScore}}</view>
+        </view>
+        <view class="contact-btn" wx:if="{{booking.status === 1}}" bindtap="callDriver">联系</view>
+      </view>
+    </view>
+
+    <!-- 时间线 -->
+    <view class="section">
+      <view class="section-title">预约时间线</view>
+      <view class="timeline">
+        <view class="timeline-item">
+          <view class="timeline-dot active"></view>
+          <view class="timeline-content">
+            <view class="timeline-title">预约成功</view>
+            <view class="timeline-time">{{formatDateTime(booking.bookedAt)}}</view>
+          </view>
+        </view>
+        <view class="timeline-item" wx:if="{{booking.confirmedAt}}">
+          <view class="timeline-dot active"></view>
+          <view class="timeline-content">
+            <view class="timeline-title">车主确认</view>
+            <view class="timeline-time">{{formatDateTime(booking.confirmedAt)}}</view>
+          </view>
+        </view>
+        <view class="timeline-item" wx:if="{{booking.completedAt}}">
+          <view class="timeline-dot active"></view>
+          <view class="timeline-content">
+            <view class="timeline-title">行程完成</view>
+            <view class="timeline-time">{{formatDateTime(booking.completedAt)}}</view>
+          </view>
+        </view>
+        <view class="timeline-item" wx:if="{{booking.cancelledAt}}">
+          <view class="timeline-dot"></view>
+          <view class="timeline-content">
+            <view class="timeline-title">已取消</view>
+            <view class="timeline-time">{{formatDateTime(booking.cancelledAt)}}</view>
+            <view class="timeline-reason" wx:if="{{booking.passengerCancelReason}}">原因：{{booking.passengerCancelReason}}</view>
+            <view class="timeline-reason" wx:if="{{booking.driverCancelReason}}">原因：{{booking.driverCancelReason}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 评价信息 -->
+    <view class="section" wx:if="{{booking.status === 2 && review}}">
+      <view class="section-title">已评价</view>
+      <view class="review-card">
+        <view class="rating">
+          <text class="star" wx:for="{{5}}" wx:key="*this" wx:if="{{review.rating >= index + 1}}">★</text>
+        </view>
+        <view class="content">{{review.content}}</view>
+      </view>
+    </view>
+
+    <!-- 操作按钮 -->
+    <view class="action-section" wx:if="{{showActions}}">
+      <button class="btn-action btn-cancel" bindtap="cancelBooking" wx:if="{{canCancel}}">取消预约</button>
+      <button class="btn-action btn-complete" bindtap="completeTrip" wx:if="{{canComplete}}">完成行程</button>
+      <button class="btn-action btn-review" bindtap="writeReview" wx:if="{{canReview}}">写评价</button>
+    </view>
+  </view>
+</view>

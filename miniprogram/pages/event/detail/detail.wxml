@@ -1,0 +1,105 @@
+<!--pages/event/detail/detail.wxml-->
+<view class="container">
+  <view class="event-card" wx:if="{{event}}">
+    <!-- 活动标题 -->
+    <view class="event-header">
+      <view class="event-title">{{event.title}}</view>
+      <view class="event-location">{{event.locationAddress}}</view>
+    </view>
+
+    <!-- 时间信息 -->
+    <view class="time-section">
+      <view class="time-item">
+        <text class="time-label">开始时间</text>
+        <text class="time-value">{{formatDateTime(event.startTime)}}</text>
+      </view>
+      <view class="time-item" wx:if="{{event.endTime}}">
+        <text class="time-label">结束时间</text>
+        <text class="time-value">{{formatDateTime(event.endTime)}}</text>
+      </view>
+      <view class="time-item" wx:if="{{event.registrationDeadline}}">
+        <text class="time-label">报名截止</text>
+        <text class="time-value">{{formatDateTime(event.registrationDeadline)}}</text>
+      </view>
+    </view>
+
+    <!-- 活动描述 -->
+    <view class="description-section" wx:if="{{event.description}}">
+      <view class="section-title">活动详情</view>
+      <view class="description">{{event.description}}</view>
+    </view>
+
+    <!-- 统计信息 -->
+    <view class="stats-section">
+      <view class="stat-item">
+        <text class="stat-number">{{event.totalParticipants}}</text>
+        <text class="stat-label">总参与</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-number">{{event.driversCount}}</text>
+        <text class="stat-label">可提供车位</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-number">{{event.passengersCount}}</text>
+        <text class="stat-label">需乘车</text>
+      </view>
+    </view>
+
+    <!-- 车辆分配状态 -->
+    <view class="allocation-section" wx:if="{{event.allocationStatus === 1}}">
+      <view class="allocation-status">
+        <text class="status-icon">✓</text>
+        <text class="status-text">车辆已分配</text>
+      </view>
+      <button class="btn-view-allocation" bindtap="viewAllocation">查看分配结果</button>
+    </view>
+
+    <!-- 参与者列表 -->
+    <view class="participants-section">
+      <view class="section-title">参与者 ({{participants.length}})</view>
+      <view class="participant-list">
+        <view class="participant-item" wx:for="{{participants}}" wx:key="userId">
+          <image class="avatar" src="{{item.user.avatarUrl}}" mode="aspectFill" />
+          <view class="participant-info">
+            <view class="name">{{item.user.nickname}}</view>
+            <view class="type-tag" wx:if="{{item.isDriver === 1}}">车主</view>
+            <view class="type-tag passenger" wx:if="{{item.isDriver === 0}}">乘客</view>
+          </view>
+          <view class="seats" wx:if="{{item.seatsProvided || item.seatsNeeded}}">
+            <text wx:if="{{item.seatsProvided}}">+{{item.seatsProvided}}座</text>
+            <text wx:if="{{item.seatsNeeded}}">-{{item.seatsNeeded}}座</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 操作按钮 -->
+    <view class="action-section">
+      <button class="btn-join" bindtap="joinEvent" wx:if="{{!isJoined}}">立即报名</button>
+      <button class="btn-leave" bindtap="leaveEvent" wx:if="{{isJoined && !isOrganizer}}">退出活动</button>
+      <button class="btn-allocate" bindtap="allocateVehicles" wx:if="{{isOrganizer}}">智能分配车辆</button>
+    </view>
+  </view>
+
+  <!-- 分配结果弹窗 -->
+  <view class="modal" wx:if="{{showAllocationModal}}">
+    <view class="modal-content">
+      <view class="modal-title">车辆分配结果</view>
+      <view class="allocation-list">
+        <view class="allocation-group" wx:for="{{allocationResult}}" wx:key="driverId">
+          <view class="group-header">
+            <text class="driver-name">{{item.driverName}}</text>
+            <text class="seats-count">可提供 {{item.seatsProvided}} 座</text>
+          </view>
+          <view class="passenger-list">
+            <view class="passenger-item" wx:for="{{item.passengers}}" wx:key="userId">
+              <text class="passenger-name">{{item2.name}}</text>
+              <text class="passenger-seats">-{{item2.seatsNeeded}}座</text>
+            </view>
+          </view>
+        </view>
+      </view>
+      <button class="btn-close" bindtap="closeAllocationModal">关闭</button>
+    </view>
+  </view>
+</view>

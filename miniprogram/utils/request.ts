@@ -136,6 +136,7 @@ export const api = {
     complete: (id: number) => post(`/booking/${id}/complete`),
     my: (params?: any) => get('/booking/my', params),
     detail: (id: number) => get(`/booking/${id}`),
+    byTrip: (tripId: number) => get(`/booking/trip/${tripId}`),
   },
 
   // 活动
@@ -158,6 +159,7 @@ export const api = {
     myReceived: (params?: any) => get('/review/my/received', params),
     myGiven: (params?: any) => get('/review/my/given', params),
     userStats: (userId: number) => get(`/review/user/${userId}/stats`),
+    getByBooking: (bookingId: number) => get(`/review/booking/${bookingId}`),
   },
 
   // 通知
