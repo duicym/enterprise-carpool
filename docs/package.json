@@ -1,0 +1,15 @@
+{
+  "name": "ceng-carpool-docs",
+  "version": "1.0.0",
+  "description": "蹭蹭车平台官方文档",
+  "type": "module",
+  "scripts": {
+    "dev": "vitepress dev",
+    "build": "vitepress build",
+    "preview": "vitepress preview"
+  },
+  "devDependencies": {
+    "vitepress": "^1.0.0",
+    "vue": "^3.4.0"
+  }
+}
