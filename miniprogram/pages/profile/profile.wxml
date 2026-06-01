@@ -1,64 +1,62 @@
-<view class="profile-page">
-  <!-- 用户信息头部 -->
-  <view class="profile-header">
-    <image class="user-avatar" src="{{userInfo.avatar_url || '/images/default-avatar.png'}}" mode="aspectFill" />
+<!--pages/profile/profile.wxml-->
+<view class="container">
+  <!-- 用户信息卡片 -->
+  <view class="user-card">
     <view class="user-info">
-      <text class="user-name">{{userInfo.nickname || '未登录'}}</text>
-      <text class="user-phone" wx:if="{{userInfo.phone}}">{{userInfo.phone}}</text>
-      <view class="auth-tag {{auditStatus === 1 ? 'authed' : auditStatus === 0 ? 'pending' : ''}}" wx:if="{{companyName}}">
-        <text class="company-name">{{companyName}}</text>
-        <text class="auth-status">{{auditStatusText}}</text>
+      <image class="avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill"></image>
+      <view class="user-detail">
+        <view class="nickname">{{userInfo.nickname || '未知用户'}}</view>
+        <view class="rating" wx:if="{{userStats}}">
+          <text class="stars">{{ratingToStars(userStats.averageRating)}}</text>
+          <text class="score">{{userStats.averageRating}}分</text>
+        </view>
       </view>
+    </view>
+
+    <view class="credit-score" wx:if="{{userInfo.creditScore}}">
+      <text class="score-value">{{userInfo.creditScore}}</text>
+      <text class="score-label">信用分</text>
     </view>
   </view>
 
-  <!-- 功能列表 -->
-  <view class="menu-section">
-    <!-- 我的路线 -->
-    <view class="menu-item" bindtap="goToPage" data-url="/pages/index/index">
-      <view class="menu-left">
-        <text class="menu-icon">🚗</text>
-        <text class="menu-title">我的路线</text>
-      </view>
-      <text class="menu-arrow">></text>
+  <!-- 功能菜单 -->
+  <view class="menu-list">
+    <view class="menu-item" bindtap="goToMyCircles">
+      <text class="menu-icon">👥</text>
+      <text class="menu-text">我的圈子</text>
+      <text class="menu-arrow">›</text>
     </view>
 
-    <!-- 我的订单 -->
-    <view class="menu-item" bindtap="goToPage" data-url="/pages/order/order">
-      <view class="menu-left">
-        <text class="menu-icon">📋</text>
-        <text class="menu-title">我的订单</text>
-      </view>
-      <text class="menu-arrow">></text>
+    <view class="menu-item" bindtap="goToMyTrips">
+      <text class="menu-icon">🚗</text>
+      <text class="menu-text">我的行程</text>
+      <text class="menu-arrow">›</text>
     </view>
 
-    <!-- 消息通知 -->
-    <view class="menu-item" bindtap="goToPage" data-url="/pages/notification/notification">
-      <view class="menu-left">
-        <text class="menu-icon">🔔</text>
-        <text class="menu-title">消息通知</text>
-      </view>
-      <view class="menu-right">
-        <text class="unread-badge" wx:if="{{unreadCount > 0}}">{{unreadCount > 99 ? '99+' : unreadCount}}</text>
-        <text class="menu-arrow">></text>
-      </view>
-    </view>
-
-    <!-- 企业认证 -->
-    <view class="menu-item" bindtap="goToPage" data-url="/pages/company-auth/company-auth">
-      <view class="menu-left">
-        <text class="menu-icon">🏢</text>
-        <text class="menu-title">企业认证</text>
-      </view>
-      <view class="menu-right">
-        <text class="menu-value" wx:if="{{companyName}}">{{auditStatusText}}</text>
-        <text class="menu-arrow">></text>
-      </view>
+    <view class="menu-item" bindtap="goToMyReviews">
+      <text class="menu-icon">⭐</text>
+      <text class="menu-text">我的评价</text>
+      <text class="menu-arrow">›</text>
     </view>
   </view>
 
-  <!-- 退出登录 -->
-  <view class="logout-section">
-    <button class="logout-btn" bindtap="handleLogout">退出登录</button>
+  <!-- 设置 -->
+  <view class="menu-list">
+    <view class="menu-item">
+      <text class="menu-icon">⚙️</text>
+      <text class="menu-text">设置</text>
+      <text class="menu-arrow">›</text>
+    </view>
+
+    <view class="menu-item" bindtap="onLogout">
+      <text class="menu-icon">🚪</text>
+      <text class="menu-text">退出登录</text>
+      <text class="menu-arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 版本信息 -->
+  <view class="version-info">
+    <text>蹭蹭车 v1.0.0</text>
   </view>
 </view>

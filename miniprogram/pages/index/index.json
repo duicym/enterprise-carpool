@@ -1,0 +1,5 @@
+// pages/index/index.json
+{
+  "navigationBarTitleText": "蹭蹭车",
+  "enablePullDownRefresh": true
+}

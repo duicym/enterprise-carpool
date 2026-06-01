@@ -1,121 +1,75 @@
-const api = require('../../utils/api');
+// pages/login/login.ts
+import { api } from '../../utils/request';
 
 Page({
   data: {
     loading: false,
-    hasUserInfo: false,
-    userInfo: null,
   },
 
   onLoad() {
-    // 检查是否已登录
-    const token = wx.getStorageSync('token');
-    if (token) {
-      getApp().globalData.token = token;
+    // 检查是否已有 token
+    const app = getApp<any>();
+    if (app.globalData.token) {
       wx.switchTab({ url: '/pages/index/index' });
     }
   },
 
-  // 微信授权登录
-  async handleLogin() {
-    if (this.data.loading) return;
-    this.setData({ loading: true });
-
-    try {
-      // 1. 获取微信登录 code
-      const loginRes = await wx.login();
-      const code = loginRes.code;
-
-      // 2. 调用后端登录接口
-      const res = await api.post('/auth/wechat-login', { code });
-
-      // 3. 保存登录信息
-      const { token, user, isNew } = res.data;
-      wx.setStorageSync('token', token);
-      getApp().globalData.token = token;
-      getApp().globalData.userInfo = user;
-
-      // 4. 根据是否新用户跳转
-      if (isNew) {
-        wx.redirectTo({ url: '/pages/company-auth/company-auth' });
-      } else {
-        wx.switchTab({ url: '/pages/index/index' });
-      }
-    } catch (error) {
-      console.error('Login failed:', error);
-      wx.showToast({
-        title: '登录失败，请重试',
-        icon: 'none',
-      });
-    } finally {
-      this.setData({ loading: false });
-    }
-  },
-
-  // 授权获取用户信息
-  onGetUserProfile(e) {
-    if (this.data.loading) return;
-    this.setData({ loading: true });
-
-    wx.getUserProfile({
-      desc: '用于完善个人资料',
-      success: (res) => {
-        const userInfo = res.userInfo;
-        this.setData({
-          hasUserInfo: true,
-          userInfo,
-        });
-        // 获取到用户信息后继续登录
-        this.handleLoginWithProfile(userInfo);
-      },
-      fail: () => {
-        this.setData({ loading: false });
+  async onGetUserInfo(e: any) {
+    if (e.detail.userInfo) {
+      this.setData({ loading: true });
+      
+      try {
+        // 微信登录获取 code
+        const { code } = await this.wxLogin();
+        
+        // 调用后端登录接口
+        const { data } = await api.auth.login(code);
+        
+        // 保存 token 和用户信息
+        const app = getApp<any>();
+        app.globalData.token = data.token;
+        app.globalData.userInfo = data.user;
+        wx.setStorageSync('token', data.token);
+        
         wx.showToast({
-          title: '需要授权才能继续',
+          title: '登录成功',
+          icon: 'success',
+        });
+        
+        // 跳转首页
+        setTimeout(() => {
+          wx.switchTab({ url: '/pages/index/index' });
+        }, 1000);
+        
+      } catch (error) {
+        console.error('登录失败:', error);
+        wx.showToast({
+          title: '登录失败，请重试',
           icon: 'none',
         });
-      },
-    });
-  },
-
-  // 带用户信息的登录
-  async handleLoginWithProfile(userInfo) {
-    try {
-      const loginRes = await wx.login();
-      const code = loginRes.code;
-
-      const res = await api.post('/auth/wechat-login', {
-        code,
-        userInfo: {
-          nickName: userInfo.nickName,
-          avatarUrl: userInfo.avatarUrl,
-          gender: userInfo.gender,
-        },
-      });
-
-      const { token, user, isNew } = res.data;
-      wx.setStorageSync('token', token);
-      getApp().globalData.token = token;
-      getApp().globalData.userInfo = user;
-
-      if (isNew) {
-        wx.redirectTo({ url: '/pages/company-auth/company-auth' });
-      } else {
-        wx.switchTab({ url: '/pages/index/index' });
+      } finally {
+        this.setData({ loading: false });
       }
-    } catch (error) {
-      console.error('Login with profile failed:', error);
+    } else {
       wx.showToast({
-        title: '登录失败，请重试',
+        title: '需要授权登录',
         icon: 'none',
       });
-    } finally {
-      this.setData({ loading: false });
     }
   },
 
-  // 跳过登录（开发调试用）
-  handleSkip() {
-    wx.switchTab({ url: '/pages/index/index' });
+  wxLogin(): Promise<{ code: string }> {
+    return new Promise((resolve, reject) => {
+      wx.login({
+        success: (res) => {
+          if (res.code) {
+            resolve({ code: res.code });
+          } else {
+            reject(new Error('微信登录失败'));
+          }
+        },
+        fail: reject,
+      });
+    });
   },
 });

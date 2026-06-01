@@ -1,45 +1,52 @@
+// app.json
 {
   "pages": [
     "pages/index/index",
     "pages/login/login",
-    "pages/route-detail/route-detail",
-    "pages/route-publish/route-publish",
-    "pages/order/order",
-    "pages/order-detail/order-detail",
     "pages/profile/profile",
-    "pages/company-auth/company-auth",
-    "pages/notification/notification",
-    "pages/review/review"
+    "pages/circle/list/list",
+    "pages/circle/detail/detail",
+    "pages/circle/create/create",
+    "pages/trip/publish/publish",
+    "pages/trip/detail/detail",
+    "pages/booking/list/list",
+    "pages/booking/detail/detail",
+    "pages/event/detail/detail"
   ],
   "window": {
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#fff",
-    "navigationBarTitleText": "企业顺风车",
-    "navigationBarTextStyle": "black"
+    "navigationBarBackgroundColor": "#07C160",
+    "navigationBarTitleText": "蹭蹭车",
+    "navigationBarTextStyle": "white"
   },
   "tabBar": {
     "color": "#999999",
-    "selectedColor": "#07c160",
+    "selectedColor": "#07C160",
     "backgroundColor": "#ffffff",
-    "borderStyle": "black",
     "list": [
       {
         "pagePath": "pages/index/index",
         "text": "首页",
-        "iconPath": "images/home.png",
-        "selectedIconPath": "images/home-active.png"
+        "iconPath": "images/tab-home.png",
+        "selectedIconPath": "images/tab-home-active.png"
       },
       {
-        "pagePath": "pages/order/order",
-        "text": "订单",
-        "iconPath": "images/order.png",
-        "selectedIconPath": "images/order-active.png"
+        "pagePath": "pages/circle/list/list",
+        "text": "圈子",
+        "iconPath": "images/tab-circle.png",
+        "selectedIconPath": "images/tab-circle-active.png"
+      },
+      {
+        "pagePath": "pages/booking/list/list",
+        "text": "行程",
+        "iconPath": "images/tab-trip.png",
+        "selectedIconPath": "images/tab-trip-active.png"
       },
       {
         "pagePath": "pages/profile/profile",
         "text": "我的",
-        "iconPath": "images/profile.png",
-        "selectedIconPath": "images/profile-active.png"
+        "iconPath": "images/tab-profile.png",
+        "selectedIconPath": "images/tab-profile-active.png"
       }
     ]
   },

@@ -1,7 +1,7 @@
 {
-  "name": "carpool-backend",
-  "version": "0.0.1",
-  "description": "企业顺风车平台后端服务",
+  "name": "ceng-carpool-backend",
+  "version": "1.0.0",
+  "description": "蹭蹭车 - 熟人社交蹭车平台后端服务",
   "author": "",
   "private": true,
   "license": "MIT",

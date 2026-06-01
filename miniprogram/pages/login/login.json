@@ -1,0 +1,5 @@
+// pages/login/login.json
+{
+  "navigationBarTitleText": "登录",
+  "navigationStyle": "custom"
+}

@@ -1,13 +1,10 @@
-const api = require('../../utils/api');
+// pages/profile/profile.ts
+import { api } from '../../utils/request';
 
 Page({
   data: {
-    userInfo: null,
-    companyName: '',
-    auditStatus: null,
-    auditStatusText: '',
-    unreadCount: 0,
-    loading: false,
+    userInfo: null as any,
+    userStats: null as any,
   },
 
   onShow() {
@@ -15,70 +12,55 @@ Page({
   },
 
   async loadUserInfo() {
-    const token = wx.getStorageSync('token');
-    if (!token) {
-      wx.redirectTo({ url: '/pages/login/login' });
-      return;
-    }
-
-    this.setData({ loading: true });
     try {
-      const res = await api.get('/auth/profile');
-      const user = res.data;
-
-      let companyName = '';
-      let auditStatus = null;
-      let auditStatusText = '';
-
-      if (user.userCompanies && user.userCompanies.length > 0) {
-        const uc = user.userCompanies[0];
-        companyName = uc.company.name;
-        auditStatus = uc.audit_status;
-
-        if (auditStatus === 0) auditStatusText = '审核中';
-        else if (auditStatus === 1) auditStatusText = '已认证';
-        else if (auditStatus === 2) auditStatusText = '已拒绝';
+      const app = getApp<any>();
+      const userInfo = app.globalData.userInfo;
+      
+      if (userInfo) {
+        this.setData({ userInfo });
+        
+        // 获取评价统计
+        try {
+          const { data } = await api.review.userStats(userInfo.id);
+          this.setData({ userStats: data });
+        } catch (error) {
+          console.error('获取评价统计失败:', error);
+        }
       }
-
-      this.setData({ userInfo: user, companyName, auditStatus, auditStatusText });
-      getApp().globalData.userInfo = user;
-
-      // 获取未读消息数
-      this.loadUnreadCount();
     } catch (error) {
-      console.error('Failed to load user info:', error);
-      wx.redirectTo({ url: '/pages/login/login' });
-    } finally {
-      this.setData({ loading: false });
+      console.error('加载用户信息失败:', error);
     }
   },
 
-  async loadUnreadCount() {
-    try {
-      const res = await api.get('/notification/list', { page: 1, pageSize: 1 }, { silent: true });
-      this.setData({ unreadCount: res.data.unreadCount || 0 });
-    } catch (error) {
-      // 忽略
-    }
+  goToMyTrips() {
+    wx.navigateTo({ url: '/pages/booking/list/list' });
   },
 
-  goToPage(e) {
-    const url = e.currentTarget.dataset.url;
-    wx.navigateTo({ url });
+  goToMyReviews() {
+    wx.navigateTo({ url: '/pages/profile/reviews/reviews' });
   },
 
-  handleLogout() {
+  goToMyCircles() {
+    wx.navigateTo({ url: '/pages/circle/list/list' });
+  },
+
+  onLogout() {
     wx.showModal({
-      title: '退出登录',
+      title: '确认退出',
       content: '确定要退出登录吗？',
       success: (res) => {
         if (res.confirm) {
-          wx.clearStorageSync();
-          getApp().globalData.token = null;
-          getApp().globalData.userInfo = null;
-          wx.reLaunch({ url: '/pages/login/login' });
+          const app = getApp<any>();
+          app.globalData.token = null;
+          app.globalData.userInfo = null;
+          wx.removeStorageSync('token');
+          wx.redirectTo({ url: '/pages/login/login' });
         }
       },
     });
+  },
+
+  ratingToStars(rating: number): string {
+    return '★'.repeat(rating || 0) + '☆'.repeat(5 - (rating || 0));
   },
 });

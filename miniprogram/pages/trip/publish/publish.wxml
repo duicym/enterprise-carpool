@@ -1,0 +1,111 @@
+<!--pages/trip/publish/publish.wxml-->
+<view class="container">
+  <form bindsubmit="onSubmit">
+    <!-- 选择圈子 -->
+    <view class="form-section">
+      <view class="section-title">选择圈子</view>
+      <picker bindchange="onCircleChange" value="0" range="{{circles}}" range-key="name">
+        <view class="picker">
+          {{selectedCircle ? selectedCircle.name : '请选择圈子'}}
+          <text class="arrow">›</text>
+        </view>
+      </picker>
+    </view>
+
+    <!-- 起点 -->
+    <view class="form-section">
+      <view class="section-title">
+        <text class="dot start"></text>
+        起点
+      </view>
+      <view class="location-input" bindtap="onStartLocationChoose">
+        <text wx:if="{{!startAddress}}" class="placeholder">点击选择起点</text>
+        <text wx:else>{{startAddress}}</text>
+      </view>
+    </view>
+
+    <!-- 终点 -->
+    <view class="form-section">
+      <view class="section-title">
+        <text class="dot end"></text>
+        终点
+      </view>
+      <view class="location-input" bindtap="onEndLocationChoose">
+        <text wx:if="{{!endAddress}}" class="placeholder">点击选择终点</text>
+        <text wx:else>{{endAddress}}</text>
+      </view>
+    </view>
+
+    <!-- 出发时间 -->
+    <view class="form-section">
+      <view class="section-title">出发时间</view>
+      <picker mode="multiSelector" bindchange="onTimeChange" value="{{departureTime}}">
+        <view class="picker">
+          {{departureTime || '请选择出发时间'}}
+          <text class="arrow">›</text>
+        </view>
+      </picker>
+    </view>
+
+    <!-- 座位数 -->
+    <view class="form-section">
+      <view class="section-title">座位数</view>
+      <picker mode="selector" range="{{[1,2,3,4,5,6,7,8,9,10]}}" bindchange="onSeatChange">
+        <view class="picker">
+          {{seatCount}} 座
+          <text class="arrow">›</text>
+        </view>
+      </picker>
+    </view>
+
+    <!-- 费用模式 -->
+    <view class="form-section">
+      <view class="section-title">费用模式</view>
+      <radio-group bindchange="onFeeModeChange">
+        <view class="radio-group">
+          <label class="radio-item">
+            <radio value="1" checked="{{feeMode === 1}}" color="#07C160"/>
+            <text>免费互助</text>
+          </label>
+          <label class="radio-item">
+            <radio value="2" checked="{{feeMode === 2}}" color="#07C160"/>
+            <text>AA 分摊</text>
+          </label>
+          <label class="radio-item">
+            <radio value="3" checked="{{feeMode === 3}}" color="#07C160"/>
+            <text>付费搭乘</text>
+          </label>
+        </view>
+      </radio-group>
+    </view>
+
+    <!-- 费用金额 -->
+    <view class="form-section" wx:if="{{feeMode !== 1}}">
+      <view class="section-title">费用金额 (元/人)</view>
+      <input 
+        class="input" 
+        type="digit" 
+        placeholder="请输入每人分摊费用"
+        value="{{feeAmount}}"
+        bindinput="onFeeAmountInput"
+      />
+    </view>
+
+    <!-- 备注 -->
+    <view class="form-section">
+      <view class="section-title">备注说明</view>
+      <textarea 
+        class="textarea" 
+        placeholder="可填写路线说明、集合地点等"
+        maxlength="200"
+        value="{{remark}}"
+        bindinput="onRemarkInput"
+      />
+    </view>
+
+    <!-- 提交按钮 -->
+    <view class="submit-section">
+      <button class="submit-btn" form-type="submit">发布行程</button>
+    </view>
+  </form>
+</view>

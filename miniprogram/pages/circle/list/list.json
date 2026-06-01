@@ -1,0 +1,5 @@
+// pages/circle/list/list.json
+{
+  "navigationBarTitleText": "我的圈子",
+  "enablePullDownRefresh": true
+}

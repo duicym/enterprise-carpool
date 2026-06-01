@@ -4,13 +4,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { RedisModule } from './config/redis.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
-import { CompanyModule } from './modules/company/company.module';
-import { RouteModule } from './modules/route/route.module';
-import { OrderModule } from './modules/order/order.module';
+import { CircleModule } from './modules/circle/circle.module';
+import { TripModule } from './modules/trip/trip.module';
+import { BookingModule } from './modules/booking/booking.module';
+import { EventModule } from './modules/event/event.module';
 import { ReviewModule } from './modules/review/review.module';
 import { NotificationModule } from './modules/notification/notification.module';
-import { AdminModule } from './modules/admin/admin.module';
-import { OssModule } from './modules/oss/oss.module';
 
 @Module({
   imports: [
@@ -57,13 +56,12 @@ import { OssModule } from './modules/oss/oss.module';
     // 业务模块
     AuthModule,
     UserModule,
-    CompanyModule,
-    RouteModule,
-    OrderModule,
+    CircleModule,
+    TripModule,
+    BookingModule,
+    EventModule,
     ReviewModule,
     NotificationModule,
-    AdminModule,
-    OssModule,
   ],
 })
 export class AppModule {}

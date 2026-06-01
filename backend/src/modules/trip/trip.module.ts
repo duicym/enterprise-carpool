@@ -1,0 +1,15 @@
+
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Trip } from './entities/trip.entity';
+import { CircleModule } from '../../circle/circle.module';
+import { TripService } from './trip.service';
+import { TripController } from './trip.controller';
+
+@Module({
+  imports: [TypeOrmModule.forFeature([Trip]), CircleModule],
+  controllers: [TripController],
+  providers: [TripService],
+  exports: [TripService],
+})
+export class TripModule {}

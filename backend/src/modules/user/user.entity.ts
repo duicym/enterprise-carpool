@@ -4,13 +4,7 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToMany,
 } from 'typeorm';
-import { UserCompany } from '../company/user-company.entity';
-import { Route } from '../route/route.entity';
-import { Order } from '../order/order.entity';
-import { Review } from '../review/review.entity';
-import { Notification } from '../notification/notification.entity';
 
 @Entity('user')
 export class User {
@@ -27,7 +21,7 @@ export class User {
   nickname: string;
 
   @Column({ type: 'varchar', length: 512, nullable: true })
-  avatar_url: string;
+  avatarUrl: string;
 
   @Column({ type: 'varchar', length: 20, nullable: true })
   phone: string;
@@ -35,27 +29,12 @@ export class User {
   @Column({ type: 'tinyint', default: 0 })
   gender: number;
 
+  @Column({ type: 'int', default: 100 })
+  creditScore: number;
+
   @CreateDateColumn()
-  created_at: Date;
+  createdAt: Date;
 
   @UpdateDateColumn()
-  updated_at: Date;
-
-  @OneToMany(() => UserCompany, (uc) => uc.user)
-  userCompanies: UserCompany[];
-
-  @OneToMany(() => Route, (route) => route.driver)
-  routes: Route[];
-
-  @OneToMany(() => Order, (order) => order.driver)
-  driverOrders: Order[];
-
-  @OneToMany(() => Order, (order) => order.passenger)
-  passengerOrders: Order[];
-
-  @OneToMany(() => Review, (review) => review.reviewer)
-  reviews: Review[];
-
-  @OneToMany(() => Notification, (notification) => notification.user)
-  notifications: Notification[];
+  updatedAt: Date;
 }

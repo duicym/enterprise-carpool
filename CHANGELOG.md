@@ -31,5 +31,5 @@
 - 微信小程序前端骨架
 - Docker Compose 开发环境配置
 
-[Unreleased]: https://github.com/duicym/enterprise-carpool/compare/0.0.1...HEAD
-[0.0.1]: https://github.com/duicym/enterprise-carpool/releases/tag/0.0.1
+[Unreleased]: https://github.com/duicym/ceng-carpool/compare/0.0.1...HEAD
+[0.0.1]: https://github.com/duicym/ceng-carpool/releases/tag/0.0.1

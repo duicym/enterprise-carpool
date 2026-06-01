@@ -1,79 +1,158 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Review } from './review.entity';
-import { Order } from '../order/order.entity';
-import { CreateReviewDto } from './dto/create-review.dto';
+import { Repository, LessThan } from 'typeorm';
+import { Review, ReviewStatus } from '../entities/review.entity';
+import { Booking, BookingStatus } from '../../booking/entities/booking.entity';
+import { CreateReviewDto, UpdateReviewStatusDto } from '../dto/review.dto';
 
 @Injectable()
 export class ReviewService {
   constructor(
     @InjectRepository(Review)
     private reviewRepository: Repository<Review>,
+    @InjectRepository(Booking)
+    private bookingRepository: Repository<Booking>,
   ) {}
 
-  async create(userId: number, dto: CreateReviewDto): Promise<Review> {
-    const existing = await this.reviewRepository.findOne({
-      where: { order_id: dto.order_id },
+  async create(
+    bookingId: number,
+    userId: number,
+    dto: CreateReviewDto,
+  ): Promise<Review> {
+    const booking = await this.bookingRepository.findOne({
+      where: { id: bookingId },
+      relations: ['driver', 'passenger'],
     });
 
-    if (existing) {
-      throw new HttpException(
-        { code: 7001, message: '该订单已评价' },
-        HttpStatus.BAD_REQUEST,
-      );
+    if (!booking) {
+      throw new NotFoundException('预约不存在');
     }
 
+    if (booking.status !== BookingStatus.COMPLETED) {
+      throw new BadRequestException('只有已完成的行程才能评价');
+    }
+
+    if (booking.passengerId !== userId && booking.driverId !== userId) {
+      throw new ForbiddenException('无权限评价该行程');
+    }
+
+    const existingReview = await this.reviewRepository.findOne({
+      where: { bookingId },
+    });
+
+    if (existingReview) {
+      throw new BadRequestException('已评价过该行程');
+    }
+
+    const revieweeId =
+      userId === booking.passengerId ? booking.driverId : booking.passengerId;
+
     const review = this.reviewRepository.create({
-      order_id: dto.order_id,
-      reviewer: { id: userId },
-      reviewee: { id: dto.reviewee_id },
+      bookingId,
+      reviewerId: userId,
+      revieweeId,
       rating: dto.rating,
       content: dto.content,
-      is_anonymous: dto.is_anonymous || 0,
-      status: 1,
+      isAnonymous: dto.isAnonymous || 0,
+      status: ReviewStatus.NORMAL,
     });
 
-    return await this.reviewRepository.save(review);
+    await this.reviewRepository.save(review);
+    await this.updateUserRating(revieweeId);
+
+    return review;
   }
 
-  async getList(userId: number, page: number = 1, pageSize: number = 20): Promise<any> {
-    const [items, total] = await this.reviewRepository.findAndCount({
-      where: [{ reviewer: { id: userId } }, { reviewee: { id: userId } }],
+  async reply(reviewId: number, userId: number, content: string): Promise<Review> {
+    const review = await this.findById(reviewId);
+
+    if (review.revieweeId !== userId) {
+      throw new ForbiddenException('无权限回复该评价');
+    }
+
+    if (review.replyContent) {
+      throw new BadRequestException('已回复过');
+    }
+
+    review.replyContent = content;
+    review.replyAt = new Date();
+    return this.reviewRepository.save(review);
+  }
+
+  async updateStatus(
+    reviewId: number,
+    dto: UpdateReviewStatusDto,
+    operatorId: number,
+  ): Promise<Review> {
+    const review = await this.findById(reviewId);
+    review.status = dto.status;
+    return this.reviewRepository.save(review);
+  }
+
+  async findById(id: number): Promise<Review> {
+    const review = await this.reviewRepository.findOne({
+      where: { id },
+      relations: ['reviewer', 'reviewee', 'booking'],
+    });
+
+    if (!review) {
+      throw new NotFoundException('评价不存在');
+    }
+
+    return review;
+  }
+
+  async findByUser(
+    userId: number,
+    asReviewer = false,
+    page = 1,
+    limit = 20,
+  ): Promise<{ reviews: Review[]; total: number }> {
+    const field = asReviewer ? 'reviewerId' : 'revieweeId';
+    const [reviews, total] = await this.reviewRepository.findAndCount({
+      where: { [field]: userId, status: ReviewStatus.NORMAL },
       relations: ['reviewer', 'reviewee'],
-      order: { created_at: 'DESC' },
-      skip: (page - 1) * pageSize,
-      take: pageSize,
+      order: { createdAt: 'DESC' },
+      skip: (page - 1) * limit,
+      take: limit,
     });
 
+    return { reviews, total };
+  }
+
+  async getUserRating(userId: number): Promise<{
+    averageRating: number;
+    totalReviews: number;
+    ratingDistribution: { rating: number; count: number }[];
+  }> {
+    const reviews = await this.reviewRepository.find({
+      where: { revieweeId: userId, status: ReviewStatus.NORMAL },
+    });
+
+    const totalReviews = reviews.length;
+    const averageRating =
+      totalReviews > 0
+        ? Number((reviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews).toFixed(2))
+        : 0;
+
+    const distribution = [5, 4, 3, 2, 1].map((rating) => ({
+      rating,
+      count: reviews.filter((r) => r.rating === rating).length,
+    }));
+
     return {
-      items,
-      total,
-      page,
-      pageSize,
+      averageRating,
+      totalReviews,
+      ratingDistribution: distribution,
     };
   }
 
-  async getUserStats(userId: number): Promise<any> {
-    const reviews = await this.reviewRepository.find({
-      where: { reviewee: { id: userId }, status: 1 },
-    });
-
-    const total = reviews.length;
-    const average = total > 0
-      ? reviews.reduce((sum, r) => sum + r.rating, 0) / total
-      : 0;
-
-    return {
-      total,
-      average: Number(average.toFixed(2)),
-      distribution: {
-        5: reviews.filter(r => r.rating === 5).length,
-        4: reviews.filter(r => r.rating === 4).length,
-        3: reviews.filter(r => r.rating === 3).length,
-        2: reviews.filter(r => r.rating === 2).length,
-        1: reviews.filter(r => r.rating === 1).length,
-      },
-    };
+  private async updateUserRating(userId: number): Promise<void> {
+    const { averageRating } = await this.getUserRating(userId);
   }
 }
