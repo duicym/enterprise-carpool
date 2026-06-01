@@ -1,0 +1,1 @@
+import{_ as t,o as r,c as e,a0 as l}from"./chunks/framework.Dx25mwie.js";const b=JSON.parse('{"title":"功能特性","description":"","frontmatter":{},"headers":[],"relativePath":"features.md","filePath":"features.md"}'),i={name:"features.md"};function o(n,a,s,d,h,u){return r(),e("div",null,[...a[0]||(a[0]=[l("",29)])])}const g=t(i,[["render",o]]);export{b as __pageData,g as default};

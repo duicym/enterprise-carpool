@@ -1,0 +1,1 @@
+import{_ as d,o as e,c as a,a0 as r}from"./chunks/framework.Dx25mwie.js";const T=JSON.parse('{"title":"API 接口参考","description":"","frontmatter":{},"headers":[],"relativePath":"api.md","filePath":"api.md"}'),o={name:"api.md"};function c(i,t,h,l,n,b){return e(),a("div",null,[...t[0]||(t[0]=[r("",15)])])}const p=d(o,[["render",c]]);export{T as __pageData,p as default};

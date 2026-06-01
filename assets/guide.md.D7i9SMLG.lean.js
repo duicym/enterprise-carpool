@@ -1,0 +1,1 @@
+import{_ as i,o as s,c as e,a0 as l}from"./chunks/framework.Dx25mwie.js";const k=JSON.parse('{"title":"蹭蹭车开发者指南","description":"","frontmatter":{},"headers":[],"relativePath":"guide.md","filePath":"guide.md"}'),n={name:"guide.md"};function t(h,a,r,p,o,d){return s(),e("div",null,[...a[0]||(a[0]=[l("",13)])])}const u=i(n,[["render",t]]);export{k as __pageData,u as default};
